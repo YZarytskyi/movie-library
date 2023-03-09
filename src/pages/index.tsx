@@ -1,11 +1,39 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import { Inter } from 'next/font/google'
-import styles from '@/styles/Home.module.css'
+import Head from "next/head";
+import { ChangeEventHandler, FC, FormEventHandler, useEffect, useRef } from "react";
+import { useAppDispatch, useAppSelector } from "store/hooks";
+import { setQuery } from "store/movies/moviesSlice";
+import { Container, MovieCard } from "components";
+import { useRouter } from "next/router";
+import ReactPaginate from "react-paginate";
+import Search from "../../public/search.svg";
 
-const inter = Inter({ subsets: ['latin'] })
+import {
+  fetchMoviesByQuery,
+  fetchMoviesOnPageChange,
+} from "../store/movies/moviesThunks";
 
-export default function Home() {
+const PER_PAGE: 10 = 10;
+
+const Home: FC = () => {
+  const dispatch = useAppDispatch();
+  const { movies, page, query, total, isLoading } = useAppSelector(
+    (state) => state.movies
+  );
+  const router = useRouter();
+
+  const onChangeSearchMovies: ChangeEventHandler<HTMLInputElement> = (e) => {
+    dispatch(setQuery(e.target.value));
+    router.push(
+      { query: { ...router.query, query: e.target.value } });
+  };
+
+  const onSubmitSearchMovies: FormEventHandler<HTMLFormElement> = (e) => {
+    e.preventDefault();
+    dispatch(fetchMoviesByQuery(query));
+  };
+
+  const pageCount = Math.ceil(Number(total) / PER_PAGE);
+
   return (
     <>
       <Head>
@@ -14,110 +42,53 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className={styles.main}>
-        <div className={styles.description}>
-          <p>
-            Get started by editing&nbsp;
-            <code className={styles.code}>src/pages/index.tsx</code>
-          </p>
-          <div>
-            <a
-              href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
+      <main>
+        <section className="py-5">
+          <Container>
+            <form
+              onSubmit={onSubmitSearchMovies}
+              className="relative mx-auto w-96"
             >
-              By{' '}
-              <Image
-                src="/vercel.svg"
-                alt="Vercel Logo"
-                className={styles.vercelLogo}
-                width={100}
-                height={24}
-                priority
+              <input
+                type="text"
+                className="mx-auto mb-10 block w-full rounded-3xl bg-[#2c2c2c] py-2 px-6 text-lg text-white outline-none hover:bg-[#3a3a3a] focus:bg-[#333333]"
+                placeholder="Search movies..."
+                value={query}
+                onChange={onChangeSearchMovies}
               />
-            </a>
-          </div>
-        </div>
-
-        <div className={styles.center}>
-          <Image
-            className={styles.logo}
-            src="/next.svg"
-            alt="Next.js Logo"
-            width={180}
-            height={37}
-            priority
-          />
-          <div className={styles.thirteen}>
-            <Image
-              src="/thirteen.svg"
-              alt="13"
-              width={40}
-              height={31}
-              priority
-            />
-          </div>
-        </div>
-
-        <div className={styles.grid}>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Docs <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Find in-depth information about Next.js features and&nbsp;API.
-            </p>
-          </a>
-
-          <a
-            href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Learn <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Learn about Next.js in an interactive course with&nbsp;quizzes!
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Templates <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Discover and deploy boilerplate example Next.js&nbsp;projects.
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Deploy <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Instantly deploy your Next.js site to a shareable URL
-              with&nbsp;Vercel.
-            </p>
-          </a>
-        </div>
+              <button className="absolute top-[50%] right-[15px] translate-y-[-50%] py-2 px-3">
+                <Search className="fill-light" />
+              </button>
+            </form>
+            <ul className="flex flex-wrap gap-10 items-center justify-center xl:justify-start">
+              {movies.map((movie) => (
+                <MovieCard key={movie.imdbID} movie={movie} />
+              ))}
+            </ul>
+            {pageCount > page && (
+              <ReactPaginate
+                breakLabel="..."
+                onPageChange={(e) => {
+                  dispatch(fetchMoviesOnPageChange(e.selected + 1));
+                }}
+                pageRangeDisplayed={3}
+                pageCount={pageCount}
+                nextLabel=">"
+                previousLabel="<"
+                containerClassName={"pagination"}
+                previousClassName={"pagination__item pagination__previous"}
+                pageClassName={"pagination__item pagination__page"}
+                disabledClassName={"pagination__disabled-page"}
+                activeClassName={"pagination__item pagination__active"}
+                breakClassName={"pagination__item pagination__break-me"}
+                pageLinkClassName={"pagination__link"}
+              />
+            )}
+          </Container>
+        </section>
       </main>
     </>
-  )
-}
+  );
+};
+
+export default Home;
