@@ -1,40 +1,11 @@
+import { FC } from "react";
 import Head from "next/head";
-import { ChangeEventHandler, FC, FormEventHandler, useEffect, useRef } from "react";
-import { useAppDispatch, useAppSelector } from "store/hooks";
-import { setQuery } from "store/movies/moviesSlice";
 import { Container } from "components";
-import { useRouter } from "next/router";
-import ReactPaginate from "react-paginate";
-import Search from "../../public/search.svg";
-
-import {
-  fetchMoviesByQuery,
-  fetchMoviesOnPageChange,
-} from "../store/movies/moviesThunks";
-import MovieCard from "../components/MovieCard/MovieCard";
-
-const PER_PAGE: 10 = 10;
+import SearchBar from "../views/Home/SearchBar";
+import Pagination from "../views/Home/Pagination";
+import MovieList from "../views/Home/MovieList";
 
 const Home: FC = () => {
-  const dispatch = useAppDispatch();
-  const { movies, page, query, total, isLoading } = useAppSelector(
-    (state) => state.movies
-  );
-  const router = useRouter();
-
-  const onChangeSearchMovies: ChangeEventHandler<HTMLInputElement> = (e) => {
-    dispatch(setQuery(e.target.value));
-    router.push(
-      { query: { ...router.query, query: e.target.value } });
-  };
-
-  const onSubmitSearchMovies: FormEventHandler<HTMLFormElement> = (e) => {
-    e.preventDefault();
-    dispatch(fetchMoviesByQuery(query));
-  };
-
-  const pageCount = Math.ceil(Number(total) / PER_PAGE);
-
   return (
     <>
       <Head>
@@ -43,51 +14,13 @@ const Home: FC = () => {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main>
-        <section className="py-5">
-          <Container>
-            <form
-              onSubmit={onSubmitSearchMovies}
-              className="relative mx-auto w-96"
-            >
-              <input
-                type="text"
-                className="mx-auto mb-10 block w-full rounded-3xl bg-[#2c2c2c] py-2 px-6 text-lg text-white outline-none hover:bg-[#3a3a3a] focus:bg-[#333333]"
-                placeholder="Search movies..."
-                value={query}
-                onChange={onChangeSearchMovies}
-              />
-              <button className="absolute top-[50%] right-[15px] translate-y-[-50%] py-2 px-3">
-                <Search className="fill-light" />
-              </button>
-            </form>
-            <ul className="flex flex-wrap gap-10 items-center justify-center xl:justify-start">
-              {movies.map((movie) => (
-                <MovieCard key={movie.imdbID} movie={movie} />
-              ))}
-            </ul>
-            {pageCount > page && (
-              <ReactPaginate
-                breakLabel="..."
-                onPageChange={(e) => {
-                  dispatch(fetchMoviesOnPageChange(e.selected + 1));
-                }}
-                pageRangeDisplayed={3}
-                pageCount={pageCount}
-                nextLabel=">"
-                previousLabel="<"
-                containerClassName={"pagination"}
-                previousClassName={"pagination__item pagination__previous"}
-                pageClassName={"pagination__item pagination__page"}
-                disabledClassName={"pagination__disabled-page"}
-                activeClassName={"pagination__item pagination__active"}
-                breakClassName={"pagination__item pagination__break-me"}
-                pageLinkClassName={"pagination__link"}
-              />
-            )}
-          </Container>
-        </section>
-      </main>
+      <section className="py-5">
+        <Container>
+          <SearchBar />
+          <MovieList />
+          <Pagination />
+        </Container>
+      </section>
     </>
   );
 };

@@ -2,6 +2,7 @@ import type { AppProps } from "next/app";
 import { Provider } from "react-redux";
 import { store } from "../store";
 import { Layout } from "../layout";
+import 'react-loading-skeleton/dist/skeleton.css'
 import "styles/globals.css";
 
 export default function App({ Component, pageProps }: AppProps) {

@@ -18,10 +18,10 @@ const Home: FC = () => {
       </Head>
       <section className="py-6">
         <Container>
-          <h1 className="mb-7 text-center text-3xl font-[700]">
+          <h1 className="mb-11 text-center text-3xl font-[700]">
             Favorite Movies
           </h1>
-          <ul className="grid grid-cols-1 gap-y-7 gap-x-10 md:grid-cols-3 xl:grid-cols-4">
+          <ul className="flex flex-wrap items-center justify-center gap-10 xl:justify-start">
             {favoriteMovies.length ? (
               favoriteMovies.map((movie) => (
                 <MovieCard key={movie.imdbID} movie={movie} />

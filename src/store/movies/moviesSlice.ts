@@ -29,26 +29,27 @@ export const moviesSlice = createSlice({
   name: "movies",
   initialState,
   reducers: {
-    setQuery(state, action) {
+    setQuery(state, action: PayloadAction<string>) {
       state.query = action.payload;
     },
-    setPage(state, action) {
+    setPage(state, action: PayloadAction<number>) {
       state.page = action.payload;
     },
-    setTotal(state, action) {
+    setTotal(state, action: PayloadAction<number>) {
       state.total = action.payload;
     },
-    toggleFavoriteMovie(state, action: PayloadAction<IMovie>) {
+    toggleIsFavoriteMovie(state, action: PayloadAction<IMovie>) {
       state.movies = state.movies.map((movie) => {
         return movie.imdbID === action.payload.imdbID
           ? { ...movie, isFavorite: !movie.isFavorite }
-          : movie
-        });
+          : movie;
+      });
+
       const isExist = state.favoriteMovies.find(
         (movie) => movie.imdbID === action.payload.imdbID
       );
       const addMovie = (movie: IMovie) => {
-        return [movie, ...state.favoriteMovies];
+        return [{...movie, isFavorite: true}, ...state.favoriteMovies];
       };
       const removeMovie = (id: string) => {
         return state.favoriteMovies.filter((movie) => movie.imdbID !== id);
@@ -94,6 +95,10 @@ export const moviesSlice = createSlice({
       ),
 });
 
-export const { toggleFavoriteMovie, setQuery, setPage, setTotal } =
-  moviesSlice.actions;
+export const {
+  toggleIsFavoriteMovie,
+  setQuery,
+  setPage,
+  setTotal,
+} = moviesSlice.actions;
 export default moviesSlice.reducer;

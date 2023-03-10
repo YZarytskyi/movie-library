@@ -1,10 +1,10 @@
+import React, { FC } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import React, { FC } from "react";
-import { IMovie } from "../../types";
-import { useAppDispatch } from "../../store/hooks";
+import { useAppDispatch } from "store/hooks";
+import { toggleIsFavoriteMovie } from "store/movies/moviesSlice";
+import { IMovie } from "types";
 import Star from "../../../public/star.svg";
-import { toggleFavoriteMovie } from "../../store/movies/moviesSlice";
 
 interface MovieCard {
   movie: IMovie;
@@ -15,7 +15,7 @@ const MovieCard: FC<MovieCard> = ({ movie }) => {
   return (
     <li
       key={movie.imdbID}
-      className="relative h-[400px] w-[240px] overflow-hidden rounded hover:shadow-sm hover:shadow-slate-600"
+      className="relative h-[400px] w-[240px] overflow-hidden rounded shadow-sm shadow-slate-700 transition-shadow hover:shadow-slate-500"
     >
       <Link href={`/movies/${movie.imdbID}`}>
         <Image
@@ -36,11 +36,15 @@ const MovieCard: FC<MovieCard> = ({ movie }) => {
           </p>
         </div>
       </Link>
-      <button onClick={() => dispatch(toggleFavoriteMovie(movie))}>
-        <Star className={`absolute bottom-[8.4%] right-[3px] h-[32px] w-[32px] stroke-light ${movie.isFavorite ? 'fill-[gold]' : ''}`} />
+      <button onClick={() => dispatch(toggleIsFavoriteMovie(movie))}>
+        <Star
+          className={`absolute bottom-[8.4%] right-[3px] h-[30px] w-[30px] stroke-light ${
+            movie.isFavorite ? "fill-[gold]" : ""
+          }`}
+        />
       </button>
     </li>
   );
 };
 
-export default React.memo(MovieCard)
+export default React.memo(MovieCard);
