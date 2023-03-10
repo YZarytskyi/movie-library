@@ -30,11 +30,25 @@ export interface ISelectedMovie {
   imdbVotes: string;
 }
 
+export interface ReturnTypeWithError {
+  data: null;
+  error: string
+}
+
+export interface ReturnTypeISelectedMovie {
+  data: ISelectedMovie;
+  error: null
+}
+
+export interface ReturnTypeMovies {
+  data: ResponseMovies;
+  error: null
+}
+
 export interface ResponseMovies {
   Search: IMovie[],
   totalResults: string;
   Response: "True";
-  Error: string;
 }
 
 export interface ResponseMoviesError {

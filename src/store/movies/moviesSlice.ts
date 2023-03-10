@@ -1,7 +1,8 @@
+import { setIsFavorite } from 'utils/setIsFavorite';
+import { IMovie, ResponseMovies } from 'types';
 import { fetchMoviesOnPageChange, fetchMoviesByQuery } from "./moviesThunks";
 import { createSlice, isAnyOf, PayloadAction } from "@reduxjs/toolkit";
-import { IMovie } from "../../types";
-import { setIsFavorite } from "../../utils/setIsFavorite";
+import { RootState } from '..';
 
 interface MoviesState {
   movies: IMovie[];
@@ -29,27 +30,31 @@ export const moviesSlice = createSlice({
   name: "movies",
   initialState,
   reducers: {
+    setMovies(state, {payload}: PayloadAction<ResponseMovies>) {
+      const movies = setIsFavorite(payload.Search, state.favoriteMovies)
+      state.movies = movies;
+      state.total = Number(payload.totalResults)
+    },
     setQuery(state, action: PayloadAction<string>) {
-      state.query = action.payload;
+      state.query = action.payload || '';
     },
     setPage(state, action: PayloadAction<number>) {
-      state.page = action.payload;
+      state.page = action.payload || 1;
     },
     setTotal(state, action: PayloadAction<number>) {
       state.total = action.payload;
     },
-    toggleIsFavoriteMovie(state, action: PayloadAction<IMovie>) {
+    toggleIsFavorite(state, action: PayloadAction<IMovie>) {
       state.movies = state.movies.map((movie) => {
         return movie.imdbID === action.payload.imdbID
           ? { ...movie, isFavorite: !movie.isFavorite }
           : movie;
       });
-
       const isExist = state.favoriteMovies.find(
         (movie) => movie.imdbID === action.payload.imdbID
       );
       const addMovie = (movie: IMovie) => {
-        return [{...movie, isFavorite: true}, ...state.favoriteMovies];
+        return [{ ...movie, isFavorite: true }, ...state.favoriteMovies];
       };
       const removeMovie = (id: string) => {
         return state.favoriteMovies.filter((movie) => movie.imdbID !== id);
@@ -63,20 +68,12 @@ export const moviesSlice = createSlice({
     builder
       .addCase(fetchMoviesOnPageChange.fulfilled, (state, action) => {
         state.isLoading = false;
-        const movies = setIsFavorite(
-          action.payload!.Search,
-          state.favoriteMovies
-        );
-        state.movies = movies;
+        state.movies = action.payload!.Search;
         state.total = Number(action.payload!.totalResults);
       })
       .addCase(fetchMoviesByQuery.fulfilled, (state, action) => {
         state.isLoading = false;
-        const movies = setIsFavorite(
-          action.payload!.Search,
-          state.favoriteMovies
-        );
-        state.movies = movies;
+        state.movies = action.payload!.Search;
         state.total = Number(action.payload!.totalResults);
       })
       .addMatcher(
@@ -95,8 +92,17 @@ export const moviesSlice = createSlice({
       ),
 });
 
+export const selectMovies = (state: RootState) => state.movies.movies
+export const selectFavorites = (state: RootState) => state.movies.movies
+export const selectQuery = (state: RootState) => state.movies.query
+export const selectPage = (state: RootState) => state.movies.page
+export const selectTotal = (state: RootState) => state.movies.total
+export const selectIsLoading = (state: RootState) => state.movies.isLoading
+export const selectError = (state: RootState) => state.movies.error
+
 export const {
-  toggleIsFavoriteMovie,
+  toggleIsFavorite,
+  setMovies,
   setQuery,
   setPage,
   setTotal,

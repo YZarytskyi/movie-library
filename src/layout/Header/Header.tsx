@@ -8,7 +8,7 @@ export const Header = () => {
   return (
     <header className="bg-black text-xl text-white">
       <Container>
-        <ul className="flex">
+        <ul className="flex justify-center md:justify-start">
           <li>
             <Link
               href="/"

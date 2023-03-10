@@ -1,96 +1,126 @@
-import { FC } from "react";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Image from "next/image";
+import Head from "next/head";
 import { Container } from "components";
-import { ISelectedMovie } from "types";
+import ErrorPage from "components/ErrorPage/ErrorPage";
+import { getMovieById } from "lib/moviesApi";
+import { ReturnTypeISelectedMovie, ReturnTypeWithError } from "types";
 
-interface MovieProps {
-  movie: ISelectedMovie;
-}
-
-const Movie: FC<MovieProps> = ({ movie }) => {
-  if (!movie) {
-    return null;
+const Movie = (
+  props: InferGetServerSidePropsType<typeof getServerSideProps>
+) => {
+  if (props.error || !props.data) {
+    return <ErrorPage error={props.error} />;
   }
 
+  const {
+    Title,
+    Plot,
+    Poster,
+    Year,
+    imdbRating,
+    BoxOffice,
+    Awards,
+    Actors,
+    Genre,
+  } = props.data;
+
   return (
-    <section className="py-4">
-      <Container>
-        <div className="flex gap-10">
-          {/* <Link to={goBackPath} className={s.goBackBtn} >{'< Go Back'}</Link> */}
-          <div className="h-[525px] w-[350px] flex-shrink-0">
-            <Image
-              src={movie.Poster}
-              alt={movie.Title}
-              height={525}
-              width={350}
-              className="block h-full w-full object-cover"
-            />
+    <>
+      <Head>
+        <title>{Title}</title>
+        <meta name="description" content={Plot} />
+      </Head>
+
+      <section className="py-4">
+        <Container>
+          <div className="flex flex-col items-center gap-10 xl:flex-row">
+            <div className="w-full max-w-[350px] flex-shrink-0 md:h-[525px] md:w-[350px]">
+              <Image
+                src={Poster}
+                alt={Title}
+                height={525}
+                width={350}
+                className="block h-full w-full object-cover"
+              />
+            </div>
+            <div>
+              <p className="mb-8 text-center text-xl font-[700] sm:text-2xl xl:text-left">
+                {Title} 🔥 <span>{Year}</span>
+              </p>
+
+              {imdbRating && (
+                <p className="text-md mb-5 sm:text-xl">
+                  Rating:{" "}
+                  <span className="ml-2 rounded-xl bg-accent px-4 py-1 text-[14px] font-[700] sm:text-[16px]">
+                    {imdbRating}
+                  </span>
+                </p>
+              )}
+
+              {BoxOffice && (
+                <p className="text-md mb-5 sm:text-xl">
+                  Budget:{" "}
+                  <span className="ml-2 rounded-xl bg-accent px-4 py-1 text-[14px] font-[700] sm:text-[16px]">
+                    {BoxOffice}
+                  </span>
+                </p>
+              )}
+
+              {Awards && (
+                <p className="text-md mb-5 sm:text-xl">
+                  Awards:{" "}
+                  <span className="ml-2 rounded-xl bg-accent px-4 py-1 text-[14px] font-[700] sm:text-[16px]">
+                    {Awards}
+                  </span>
+                </p>
+              )}
+
+              {Actors && (
+                <p className="text-md mb-5 sm:text-xl">
+                  Actors: <span className="ml-3">{Actors}</span>
+                </p>
+              )}
+
+              {Genre && (
+                <p className="text-md mb-10 sm:text-xl">
+                  Genres: <span className="ml-3">{Genre}</span>
+                </p>
+              )}
+
+              {Plot && (
+                <>
+                  <p className="mb-2 text-xl font-[700] sm:text-2xl">
+                    Overview
+                  </p>
+                  <p className="text-md sm:text-xl">{Plot}</p>
+                </>
+              )}
+            </div>
           </div>
-          <div>
-            <p className="mb-8 text-2xl font-[700]">
-              {movie.Title} 🔥 <span>{movie.Year}</span>
-            </p>
-
-            {movie.imdbRating && (
-              <p className="mb-5 text-xl">
-                Rating:{" "}
-                <span className="ml-2 rounded-xl bg-accent px-4 py-1 text-[16px] font-[700]">
-                  {movie.imdbRating}
-                </span>
-              </p>
-            )}
-
-            {movie.BoxOffice && (
-              <p className="mb-5 text-xl">
-                Budget:{" "}
-                <span className="ml-2 rounded-xl bg-accent px-4 py-1 text-[16px] font-[700]">
-                  {movie.BoxOffice}
-                </span>
-              </p>
-            )}
-
-            {movie.Awards && (
-              <p className="mb-5 text-xl">
-                Awards:{" "}
-                <span className="ml-2 rounded-xl bg-accent px-4 py-1 text-[16px] font-[700]">
-                  {movie.Awards}
-                </span>
-              </p>
-            )}
-
-            {movie.Actors && (
-              <p className="mb-5 text-xl">
-                Actors: <span className="ml-3">{movie.Actors}</span>
-              </p>
-            )}
-
-            {movie.Genre && (
-              <p className="mb-10 text-xl">
-                Genres: <span className="ml-3">{movie.Genre}</span>
-              </p>
-            )}
-
-            {movie.Plot && (
-              <>
-                <p className="mb-2 text-2xl font-[700]">Overview</p>
-                <p className="text-xl">{movie.Plot}</p>
-              </>
-            )}
-          </div>
-        </div>
-      </Container>
-    </section>
+        </Container>
+      </section>
+    </>
   );
 };
 
-export async function getServerSideProps(context: any) {
-  const { id } = context.query;
-  const res = await fetch(`http://www.omdbapi.com/?apikey=c4ded8eb&i=${id}`);
-  const movie = await res.json();
-
-  return {
-    props: { movie },
-  };
-}
+export const getServerSideProps: GetServerSideProps<
+  ReturnTypeISelectedMovie | ReturnTypeWithError
+> = async (context) => {
+  try {
+    const { id } = context.query;
+    const data = await getMovieById(id as string);
+    if ("Error" in data) {
+      throw new Error();
+    }
+    return {
+      props: { data, error: null },
+    };
+  } catch (error) {
+    return {
+      props: { data: null, error: "Something went wrong!" },
+    };
+  }
+};
 
 export default Movie;

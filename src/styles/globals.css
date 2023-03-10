@@ -61,50 +61,14 @@ a {
   justify-content: center;
 }
 
-.pagination__disabled-page {
-  color: #808e9b;
+.pagination__item:hover {
+  background-color: #292929;
+  border-radius: 5px;
 }
 
-.pagination__active {
-  border: solid 1px #808e9b;
-  border-radius: 40px;
+.pagination__item.active {
   color: #0084ff;
-}
-
-.pagination__next {
-  font-size: 14px;
-  height: 60px;
-  width: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.pagination__previous {
-  font-size: 14px;
-  height: 60px;
-  width: 30px;
-}
-
-.pagination {
-  height: 60px;
-  margin-top: 20px;
-  margin-bottom: 10px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  list-style-type: none;
-}
-
-.pagination__page {
-  font-weight: 700;
-}
-
-.pagination__link {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  font-weight: 600;
+  border-radius: 5px;
+  background-color: #111111;
 }

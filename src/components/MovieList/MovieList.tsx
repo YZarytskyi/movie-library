@@ -1,10 +1,16 @@
 import { SkeletonMovies } from "components";
 import MovieCard from "components/MovieCard/MovieCard";
+import { FC } from "react";
 import { useAppSelector } from "store/hooks";
+import { selectIsLoading } from "store/movies/moviesSlice";
+import { IMovie } from "types";
 
-const MovieList = () => {
-  const isLoading = useAppSelector((state) => state.movies.isLoading);
-  const movies = useAppSelector((state) => state.movies.movies);
+interface MovieListProps {
+  movies: IMovie[]
+}
+
+const MovieList: FC<MovieListProps> = ({movies}) => {
+  const isLoading = useAppSelector(selectIsLoading);
 
   return (
     <ul className="flex flex-wrap items-center justify-center gap-10 xl:justify-start">
