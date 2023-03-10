@@ -2,7 +2,7 @@ import Head from "next/head";
 import { ChangeEventHandler, FC, FormEventHandler, useEffect, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "store/hooks";
 import { setQuery } from "store/movies/moviesSlice";
-import { Container, MovieCard } from "components";
+import { Container } from "components";
 import { useRouter } from "next/router";
 import ReactPaginate from "react-paginate";
 import Search from "../../public/search.svg";
@@ -11,6 +11,7 @@ import {
   fetchMoviesByQuery,
   fetchMoviesOnPageChange,
 } from "../store/movies/moviesThunks";
+import MovieCard from "../components/MovieCard/MovieCard";
 
 const PER_PAGE: 10 = 10;
 

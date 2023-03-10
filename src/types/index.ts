@@ -4,7 +4,7 @@ export interface IMovie {
   Type: string;
   Year: string;
   imdbID: string;
-  isSelected: boolean;
+  isFavorite: boolean;
 }
 
 export interface ISelectedMovie {

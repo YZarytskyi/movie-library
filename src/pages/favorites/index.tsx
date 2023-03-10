@@ -1,7 +1,8 @@
 import Head from "next/head";
 import { FC } from "react";
 import { useAppDispatch, useAppSelector } from "store/hooks";
-import { Container, MovieCard } from "components";
+import { Container } from "components";
+import MovieCard from "../../components/MovieCard/MovieCard";
 
 const Home: FC = () => {
   const dispatch = useAppDispatch();

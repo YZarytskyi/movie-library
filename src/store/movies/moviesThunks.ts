@@ -6,9 +6,9 @@ import { setPage } from "./moviesSlice";
 export const fetchMoviesOnPageChange = createAsyncThunk(
   "movies/fetchOnPageChange",
   async (page: number = 1, { getState, dispatch, rejectWithValue }) => {
+    dispatch(setPage(page));
     const store = getState() as RootState;
     const query = store.movies.query as string;
-    dispatch(setPage(page));
     try {
       const data = await getMovies(query, page);
       if (data.Response === "False") {

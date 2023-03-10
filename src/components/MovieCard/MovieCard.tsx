@@ -10,7 +10,7 @@ interface MovieCard {
   movie: IMovie;
 }
 
-export const MovieCard: FC<MovieCard> = ({ movie }) => {
+const MovieCard: FC<MovieCard> = ({ movie }) => {
   const dispatch = useAppDispatch();
   return (
     <li
@@ -37,8 +37,10 @@ export const MovieCard: FC<MovieCard> = ({ movie }) => {
         </div>
       </Link>
       <button onClick={() => dispatch(toggleFavoriteMovie(movie))}>
-        <Star className="absolute bottom-[8.4%] right-[3px] h-[32px] w-[32px] stroke-light" />
+        <Star className={`absolute bottom-[8.4%] right-[3px] h-[32px] w-[32px] stroke-light ${movie.isFavorite ? 'fill-[gold]' : ''}`} />
       </button>
     </li>
   );
 };
+
+export default React.memo(MovieCard)

@@ -2,7 +2,7 @@ import { ResponseMoviesError } from './../types/index';
 import axios from "axios";
 import { ResponseMovies } from "../types";
 
-const BASE_URL = "http://www.omdbapi.com";
+const BASE_URL = "https://www.omdbapi.com";
 const API_KEY = "c4ded8eb";
 
 export const moviesApi = axios.create({

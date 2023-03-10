@@ -1,10 +1,7 @@
 import { fetchMoviesOnPageChange, fetchMoviesByQuery } from "./moviesThunks";
-import {
-  createSlice,
-  isAnyOf,
-  PayloadAction,
-} from "@reduxjs/toolkit";
+import { createSlice, isAnyOf, PayloadAction } from "@reduxjs/toolkit";
 import { IMovie } from "../../types";
+import { setIsFavorite } from "../../utils/setIsFavorite";
 
 interface MoviesState {
   movies: IMovie[];
@@ -42,6 +39,11 @@ export const moviesSlice = createSlice({
       state.total = action.payload;
     },
     toggleFavoriteMovie(state, action: PayloadAction<IMovie>) {
+      state.movies = state.movies.map((movie) => {
+        return movie.imdbID === action.payload.imdbID
+          ? { ...movie, isFavorite: !movie.isFavorite }
+          : movie
+        });
       const isExist = state.favoriteMovies.find(
         (movie) => movie.imdbID === action.payload.imdbID
       );
@@ -60,12 +62,20 @@ export const moviesSlice = createSlice({
     builder
       .addCase(fetchMoviesOnPageChange.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.movies = action.payload!.Search;
+        const movies = setIsFavorite(
+          action.payload!.Search,
+          state.favoriteMovies
+        );
+        state.movies = movies;
         state.total = Number(action.payload!.totalResults);
       })
       .addCase(fetchMoviesByQuery.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.movies = action.payload!.Search;
+        const movies = setIsFavorite(
+          action.payload!.Search,
+          state.favoriteMovies
+        );
+        state.movies = movies;
         state.total = Number(action.payload!.totalResults);
       })
       .addMatcher(
