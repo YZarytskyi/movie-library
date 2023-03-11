@@ -1,8 +1,8 @@
-import { SkeletonMovies } from "components";
-import MovieCard from "components/MovieCard/MovieCard";
 import { FC } from "react";
 import { useAppSelector } from "store/hooks";
 import { selectIsLoading } from "store/movies/moviesSlice";
+import { SkeletonMovies } from "components";
+import MovieCard from "components/MovieCard/MovieCard";
 import { IMovie } from "types";
 
 interface MovieListProps {

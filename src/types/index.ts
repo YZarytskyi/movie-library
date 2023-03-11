@@ -32,7 +32,7 @@ export interface ISelectedMovie {
 
 export interface ReturnTypeWithError {
   data: null;
-  error: string
+  error: string | true
 }
 
 export interface ReturnTypeISelectedMovie {
@@ -54,4 +54,8 @@ export interface ResponseMovies {
 export interface ResponseMoviesError {
   Response: "False";
   Error: string;
+}
+
+export interface PaginationEvent {
+  selected: number
 }

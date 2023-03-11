@@ -1,9 +1,9 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { RootState } from "..";
 import { getMovies } from "lib/moviesApi";
-import { setIsFavorite } from "utils/setIsFavorite";
 import { setPage } from "./moviesSlice";
-import { DEFAULT_QUERY } from "pages";
+import { setIsFavorite } from "utils/setIsFavorite";
+import { DEFAULT_QUERY } from "utils/constants";
 
 export const fetchMoviesOnPageChange = createAsyncThunk(
   "movies/fetchOnPageChange",

@@ -1,13 +1,13 @@
-import { useRouter } from "next/router";
 import { FC } from "react";
+import { useRouter } from "next/router";
 import ReactPaginate from "react-paginate";
 import { useAppDispatch, useAppSelector } from "store/hooks";
 import { fetchMoviesOnPageChange } from "store/movies/moviesThunks";
-import { selectPage, selectTotal } from "../../store/movies/moviesSlice";
+import { selectPage, selectTotal } from "store/movies/moviesSlice";
+import { PaginationEvent } from "types";
+import { PER_PAGE } from "utils/constants";
 
-const PER_PAGE: 10 = 10;
-
-const Pagination: FC = () => {
+export const Pagination: FC = () => {
   const dispatch = useAppDispatch();
   const page = useAppSelector(selectPage);
   const total = useAppSelector(selectTotal);
@@ -15,17 +15,15 @@ const Pagination: FC = () => {
 
   const pageCount = Math.ceil(Number(total) / PER_PAGE);
 
-  const onPageChange = (e: {selected: number}) => {
+  const onPageChange = (e: PaginationEvent) => {
     const currentPage = e.selected + 1;
     dispatch(fetchMoviesOnPageChange(currentPage));
-    router.push(
-      { query: { ...router.query, page: currentPage } },
-      undefined,
-      { shallow: true }
-    );
-  }
+    router.push({ query: { ...router.query, page: currentPage } }, undefined, {
+      shallow: true,
+    });
+  };
 
-  if (pageCount <= page) {
+  if (pageCount <= 1) {
     return null;
   }
 
@@ -50,6 +48,3 @@ const Pagination: FC = () => {
     />
   );
 };
-
-
-export default Pagination;

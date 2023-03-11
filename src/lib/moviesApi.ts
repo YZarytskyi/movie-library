@@ -1,9 +1,7 @@
 import axios from "axios";
+import { API_KEY, BASE_URL } from "utils/constants";
 import { ISelectedMovie, ResponseMoviesError } from 'types/index';
 import { ResponseMovies } from "types";
-
-const BASE_URL = "https://www.omdbapi.com";
-const API_KEY = "c4ded8eb";
 
 export const moviesApi = axios.create({
   baseURL: BASE_URL,

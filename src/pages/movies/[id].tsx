@@ -1,8 +1,7 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Image from "next/image";
 import Head from "next/head";
-import { Container } from "components";
-import ErrorPage from "components/ErrorPage/ErrorPage";
+import { Container, ErrorPage } from "components";
 import { getMovieById } from "lib/moviesApi";
 import { ReturnTypeISelectedMovie, ReturnTypeWithError } from "types";
 

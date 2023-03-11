@@ -1,37 +1,39 @@
 import { useEffect } from "react";
+import { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { GetServerSideProps, InferGetServerSidePropsType } from "next";
-import { Container } from "components";
-import SearchBar from "views/Home/SearchBar";
-import Pagination from "views/Home/Pagination";
-import List from "views/Home/List";
+import { Container, ErrorPage } from "components";
 import { getMovies } from "lib/moviesApi";
-import { useAppDispatch, useAppSelector } from "store/hooks";
-import { selectError, setMovies, setPage, setQuery } from "store/movies/moviesSlice";
-import ErrorPage from "components/ErrorPage/ErrorPage";
+import { useAppDispatch } from "store/hooks";
+import {
+  selectError,
+  setError,
+  setMovies,
+  setPage,
+  setQuery,
+} from "store/movies/moviesSlice";
+import { List, Pagination, SearchBar } from "../views";
 import { ReturnTypeMovies, ReturnTypeWithError } from "types";
-
-export const DEFAULT_QUERY = "movie";
+import { DEFAULT_QUERY } from "../utils/constants";
 
 const Home = (
   props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) => {
   const dispatch = useAppDispatch();
-  const error = useAppSelector(selectError)
   const router = useRouter();
 
   useEffect(() => {
     if (props.data) {
+      dispatch(setError(null))
       dispatch(setMovies(props.data));
       dispatch(setQuery(router.query.query as string));
       dispatch(setPage(Number(router.query.page)));
     }
+    if (typeof props.error === 'string') {
+      dispatch(setError(props.error))
+    }
   }, []);
 
-  if (props.error || error) {
-    return <ErrorPage error={'Something went wrong!'} />;
-  }
   return (
     <>
       <Head>
@@ -41,7 +43,7 @@ const Home = (
       <section className="py-5">
         <Container>
           <SearchBar />
-          <List />
+          <List commonError={props.error}/>
           <Pagination />
         </Container>
       </section>
@@ -57,14 +59,16 @@ export const getServerSideProps: GetServerSideProps<
     const page = Number(query.page) || 1;
     const data = await getMovies(searchQuery, page);
     if ("Error" in data) {
-      throw new Error();
+      return {
+        props: {data: null, error: data.Error}
+      }
     }
     return {
       props: { data, error: null },
     };
   } catch (error) {
     return {
-      props: { data: null, error: "Something went wrong!" },
+      props: { data: null, error: true },
     };
   }
 };

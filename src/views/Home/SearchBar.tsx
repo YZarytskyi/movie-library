@@ -1,25 +1,26 @@
-import { ChangeEventHandler, FormEventHandler, useEffect, useRef } from "react";
+import { FormEventHandler } from "react";
 import { useRouter } from "next/router";
 import { useAppDispatch, useAppSelector } from "store/hooks";
 import { fetchMoviesByQuery } from "store/movies/moviesThunks";
+import { selectQuery, setQuery } from "store/movies/moviesSlice";
 import Search from "../../../public/search.svg";
-import { selectQuery, setQuery } from "../../store/movies/moviesSlice";
 
-const SearchBar = () => {
+export const SearchBar = () => {
   const dispatch = useAppDispatch();
-  const query = useAppSelector(selectQuery)
+  const query = useAppSelector(selectQuery);
   const router = useRouter();
-  useEffect(() => {
-    console.log('+++') 
-  })
+
   const onSubmitSearchMovies: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
+    if (!query) {
+      return;
+    }
     dispatch(fetchMoviesByQuery(query));
     router.push(
       {
         query: {
           ...router.query,
-          query: query.trim().toLowerCase(),
+          query: query.trim(),
           page: 1,
         },
       },
@@ -45,5 +46,3 @@ const SearchBar = () => {
     </form>
   );
 };
-
-export default SearchBar;

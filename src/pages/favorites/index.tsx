@@ -2,7 +2,7 @@ import { FC } from "react";
 import Head from "next/head";
 import { useAppSelector } from "store/hooks";
 import { Container } from "components";
-import MovieList from "../../components/MovieList/MovieList";
+import MovieList from "components/MovieList/MovieList";
 
 const Favorites: FC = () => {
   const favoriteMovies = useAppSelector((state) => state.movies.favoriteMovies);
