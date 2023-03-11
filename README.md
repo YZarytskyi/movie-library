@@ -1,4 +1,25 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Movie Library (Next.js)
+
+Movie Library will help you to find out more about the movies you love.
+
+
+## Features
+- Adaptive design
+- The application combines SSR and CSR to reduce server load. When the page is loaded for the first time, the data is loaded on the server (SSR) and further, when the user interacts with the web application, the data is loaded already on the client (CSR)
+- Pagination for search results
+- Implement a search bar that allows users to search for movies by title.
+- Display a list of matching movies, with basic information such as title, year of release, and poster image
+- When a user clicks on a movie from the list, they should be taken to a details page that displays more information about that movie, such as plot, actors, and ratings
+- The OMDB API
+- Global Spinner on changing routes
+- Error handling
+
+
+## Technologies
+- Typescript
+- Redux state manager
+- Tailwind
+
 
 ## Getting Started
 

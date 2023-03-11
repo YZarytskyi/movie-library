@@ -10,7 +10,7 @@ const Favorites: FC = () => {
     <>
       <Head>
         <title>Favorites</title>
-        <meta name="description" content="favorite movies library" />
+        <meta name="description" content="favorite movies" />
       </Head>
       <section className="py-6">
         <Container>

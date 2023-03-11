@@ -37,7 +37,7 @@ const Home = (
   return (
     <>
       <Head>
-        <title>Movies Library</title>
+        <title>Movie Library</title>
         <meta name="description" content="Searching movies" />
       </Head>
       <section className="py-5">
