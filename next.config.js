@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['m.media-amazon.com'],
+    domains: ['m.media-amazon.com', 't4.ftcdn.net'],
   },
   webpack(config) {
     config.module.rules.push({
