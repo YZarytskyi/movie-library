@@ -13,7 +13,7 @@ const MovieList: FC<MovieListProps> = ({ movies }) => {
   const isLoading = useAppSelector(selectIsLoading);
 
   return (
-    <ul className="flex flex-wrap items-center justify-between gap-[40px] xl:justify-start">
+    <ul className="flex flex-wrap items-center justify-center gap-[40px] xl:justify-start">
       {isLoading ? (
         <SkeletonMovies />
       ) : (

@@ -10,6 +10,7 @@ import defaultPoster from "../../../public/default-poster.jpg";
 const Movie = (
   props: InferGetServerSidePropsType<typeof getServerSideProps>
 ) => {
+
   if (props.error || !props.data) {
     return <ErrorPage error={"Something went wrong!"} />;
   }
@@ -25,7 +26,7 @@ const Movie = (
     Genre,
     Released,
   } = props.data;
-  console.log(props.data);
+  
   return (
     <>
       <Head>

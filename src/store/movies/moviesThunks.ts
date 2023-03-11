@@ -22,7 +22,6 @@ export const fetchMoviesOnPageChange = createAsyncThunk(
       return data;
     } catch (error) {
       if (error instanceof Error) {
-        console.log(error);
         return rejectWithValue(error.message);
       }
     }
@@ -44,7 +43,6 @@ export const fetchMoviesByQuery = createAsyncThunk(
       return data;
     } catch (error) {
       if (error instanceof Error) {
-        console.log(error);
         return rejectWithValue(error.message);
       }
     }
